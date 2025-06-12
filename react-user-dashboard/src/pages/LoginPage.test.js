@@ -4,7 +4,7 @@ import LoginPage from './LoginPage';
 import { Provider } from 'react-redux';
 import { MemoryRouter, useNavigate, useLocation } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import {thunk} from 'redux-thunk';
 import axios from 'axios';
 
 jest.mock('axios');
