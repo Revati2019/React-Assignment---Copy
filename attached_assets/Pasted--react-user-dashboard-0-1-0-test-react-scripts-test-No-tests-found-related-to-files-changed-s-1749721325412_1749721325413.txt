@@ -1,0 +1,194 @@
+
+> react-user-dashboard@0.1.0 test
+> react-scripts test
+No tests found related to files changed since last commit.
+Press `a` to run all tests, or run Jest with `--watchAll`.
+
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press q to quit watch mode.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press Enter to trigger a test run.
+(node:16852) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ PASS  src/redux/UserSlice.test.js
+ PASS  src/redux/Store.test.js
+(node:11072) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ PASS  src/components/Loader.test.js
+(node:2200) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ PASS  src/components/UserList.test.js
+(node:2208) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ PASS  src/components/UserDetail.test.js
+ PASS  src/redux/AuthSlice.test.js                                                                                                                            
+ FAIL  src/utils/api.test.js
+  ● Test suite failed to run
+                                                                                                                                                              
+    Jest encountered an unexpected token                                                                                                                      
+                                                                                                                                                              
+    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.                                                                                                                                            
+                                                                                                                                                              
+    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.                           
+                                                                                                                                                              
+    By default "node_modules" folder is ignored by transformers.
+
+    Here's what you can do:
+     • If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.
+     • If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript
+     • To have some of your "node_modules" files transformed, you can specify a custom "transformIgnorePatterns" in your config.
+     • If you need a custom transformation specify a "transform" option in your config.
+     • If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the "moduleNameMapper" config option.
+
+    You'll find more details and examples of these config options in the docs:
+    https://jestjs.io/docs/configuration
+    For information about custom transformations, see:
+    https://jestjs.io/docs/code-transformation
+
+    Details:
+
+    C:\Users\revati.nikumbh\Desktop\React Assignment - Copy\react-user-dashboard\node_modules\axios\index.js:1
+    ({"Object.<anonymous>":function(module,exports,require,__dirname,__filename,jest){import axios from './lib/axios.js';
+                                                                                      ^^^^^^
+
+    SyntaxError: Cannot use import statement outside a module
+
+    > 1 | import axios from 'axios';
+        | ^
+      2 |
+      3 | const api = axios.create({
+      4 |   baseURL: 'https://dummyjson.com',
+
+      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1728:14)
+      at Object.<anonymous> (src/utils/api.js:1:1)
+      at Object.<anonymous> (src/utils/api.test.js:1:1)
+
+ FAIL  src/pages/UserProfile.test.js
+  ● Test suite failed to run
+                                                                                                                                                              
+    Cannot find module 'react-router-dom' from 'src/pages/UserProfile.test.js'                                                                                
+                                                                                                                                                              
+       8 | jest.mock('../utils/api');                                                                                                                         
+       9 | jest.mock('../components/Loader', () => () => <div>Loading...</div>);                                                                              
+    > 10 | jest.mock('react-router-dom', () => {                                                                                                              
+         |      ^                                                                                                                                             
+      11 |   const original = jest.requireActual('react-router-dom');                                                                                         
+      12 |   return {
+      13 |     ...original,
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/pages/UserProfile.test.js:10:6)
+
+ FAIL  src/pages/NotFound.test.js
+  ● Test suite failed to run
+                                                                                                                                                              
+    Cannot find module 'react-router-dom' from 'src/pages/NotFound.test.js'                                                                                   
+                                                                                                                                                              
+      4 | import { MemoryRouter } from 'react-router-dom';                                                                                                    
+      5 |                                                                                                                                                     
+    > 6 | jest.mock('react-router-dom', () => ({                                                                                                              
+        |      ^                                                                                                                                              
+      7 |   ...jest.requireActual('react-router-dom'),                                                                                                        
+      8 |   useNavigate: jest.fn(),
+      9 | }));
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/pages/NotFound.test.js:6:6)
+
+ FAIL  src/pages/LoginPage.test.js
+  ● Test suite failed to run
+                                                                                                                                                              
+    Cannot find module 'react-router-dom' from 'src/pages/LoginPage.test.js'                                                                                  
+                                                                                                                                                              
+       9 |                                                                                                                                                    
+      10 | jest.mock('axios');                                                                                                                                
+    > 11 | jest.mock('react-router-dom', () => ({                                                                                                             
+         |      ^                                                                                                                                             
+      12 |   ...jest.requireActual('react-router-dom'),                                                                                                       
+      13 |   useNavigate: jest.fn(),
+      14 |   useLocation: jest.fn(),
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/pages/LoginPage.test.js:11:6)
+
+ FAIL  src/pages/Dashboard.test.js
+  ● Test suite failed to run
+
+    Cannot find module 'react-router-dom' from 'src/pages/Dashboard.test.js'
+
+       5 | import useAuthToken from '../hooks/useAuthToken';
+       6 |
+    >  7 | jest.mock('react-router-dom', () => ({
+         |      ^
+       8 |   useNavigate: () => jest.fn(),
+       9 |   Link: ({ children }) => children,
+      10 | }));
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/pages/Dashboard.test.js:7:6)
+
+ FAIL  src/components/UserCard.test.js
+  ● Test suite failed to run                                                                                                                                  
+                                                                                                                                                              
+    Cannot find module 'react-router-dom' from 'src/components/UserCard.test.js'                                                                              
+                                                                                                                                                              
+      3 | import UserCard from './UserCard';                                                                                                                  
+      4 |                                                                                                                                                     
+    > 5 | jest.mock('react-router-dom', () => ({                                                                                                              
+        |      ^                                                                                                                                              
+      6 |   useNavigate: jest.fn(),                                                                                                                           
+      7 | }));
+      8 |
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/components/UserCard.test.js:5:6)
+
+ FAIL  src/components/ProtectedRoute.test.js
+  ● Test suite failed to run
+
+    Cannot find module 'react-router-dom' from 'src/components/ProtectedRoute.js'
+
+    Require stack:
+      src/components/ProtectedRoute.js
+      src/components/ProtectedRoute.test.js
+
+    > 1 | import { Navigate, useLocation } from 'react-router-dom';
+        | ^
+      2 | import { useSelector } from 'react-redux';
+      3 |
+      4 | const ProtectedRoute = ({ component: Component }) => {
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/components/ProtectedRoute.js:1:1)
+      at Object.<anonymous> (src/components/ProtectedRoute.test.js:3:1)
+
+ FAIL  src/App.test.js
+  ● Test suite failed to run
+
+    Cannot find module 'react-router-dom' from 'src/App.js'
+
+    Require stack:
+      src/App.js
+      src/App.test.js
+
+      1 | import React from 'react';
+    > 2 | import { BrowserRouter as Router } from 'react-router-dom';
+        | ^
+      3 | import { Layout } from 'antd';
+      4 | import AppRoutes from './routes/AppRoutes';
+      5 |
+
+      at Resolver.resolveModule (node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.<anonymous> (src/App.js:2:1)
+      at Object.<anonymous> (src/App.test.js:2:1)
+
+Test Suites: 8 failed, 6 passed, 14 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        3.871 s
+Ran all test suites.
+
+Watch Usage: Press w to show more.
