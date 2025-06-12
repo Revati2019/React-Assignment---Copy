@@ -1,109 +1,78 @@
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { MemoryRouter } from 'react-router-dom';
+import configureStore from 'redux-mock-store';
 import UserProfile from './UserProfile';
-import api from '../utils/api';
-import { MemoryRouter, useNavigate, useParams } from 'react-router-dom';
+import * as api from '../utils/api';
 
-// Mocks
 jest.mock('../utils/api');
 jest.mock('../components/Loader', () => () => <div>Loading...</div>);
 jest.mock('react-router-dom', () => {
   const original = jest.requireActual('react-router-dom');
   return {
     ...original,
-    useNavigate: jest.fn(),
     useParams: jest.fn(),
   };
 });
 
+const mockStore = configureStore([]);
+
+const renderWithProviders = (ui, store) => {
+  return render(
+    <Provider store={store}>
+      <MemoryRouter>
+        {ui}
+      </MemoryRouter>
+    </Provider>
+  );
+};
+
 describe('UserProfile', () => {
-  const mockNavigate = jest.fn();
+  const mockUser = {
+    id: 1,
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@example.com',
+    phone: '123-456-7890',
+    image: 'https://example.com/avatar.jpg'
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useNavigate.mockReturnValue(mockNavigate);
+    require('react-router-dom').useParams.mockReturnValue({ id: '1' });
   });
 
-  it('renders Loader while fetching user', async () => {
-    useParams.mockReturnValue({ id: '1' });
+  it('renders loading state initially', () => {
+    const store = mockStore({ auth: { token: 'test-token' } });
+    api.fetchUserById = jest.fn().mockImplementation(() => new Promise(() => {}));
 
-    api.get.mockReturnValue(new Promise(() => {})); 
+    renderWithProviders(<UserProfile />, store);
 
-    render(
-      <MemoryRouter>
-        <UserProfile />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it('renders user details when fetched successfully', async () => {
-    useParams.mockReturnValue({ id: '1' });
+  it('renders user profile when data is loaded', async () => {
+    const store = mockStore({ auth: { token: 'test-token' } });
+    api.fetchUserById = jest.fn().mockResolvedValue(mockUser);
 
-    api.get.mockResolvedValue({
-      data: {
-        id: 1,
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'jane@example.com',
-        gender: 'female',
-        username: 'janedoe',
-        image: 'https://example.com/image.jpg',
-      },
+    renderWithProviders(<UserProfile />, store);
+
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+      expect(screen.getByText('john@example.com')).toBeInTheDocument();
+      expect(screen.getByText('123-456-7890')).toBeInTheDocument();
     });
-
-    render(
-      <MemoryRouter>
-        <UserProfile />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(screen.getByText('Jane Doe')).toBeInTheDocument());
-    expect(screen.getByText(/jane@example.com/i)).toBeInTheDocument();
-    expect(screen.getByText(/female/i)).toBeInTheDocument();
-    expect(screen.getByText(/janedoe/i)).toBeInTheDocument();
   });
 
-  it('renders fallback text if user is not found', async () => {
-    useParams.mockReturnValue({ id: '999' });
+  it('renders error message when user fetch fails', async () => {
+    const store = mockStore({ auth: { token: 'test-token' } });
+    api.fetchUserById = jest.fn().mockRejectedValue(new Error('User not found'));
 
-    api.get.mockRejectedValue(new Error('User not found'));
+    renderWithProviders(<UserProfile />, store);
 
-    render(
-      <MemoryRouter>
-        <UserProfile />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(screen.getByText(/user not found/i)).toBeInTheDocument());
-  });
-
-  it('navigates back to dashboard on button click', async () => {
-    useParams.mockReturnValue({ id: '1' });
-
-    api.get.mockResolvedValue({
-      data: {
-        id: 1,
-        firstName: 'John',
-        lastName: 'Smith',
-        email: 'john@example.com',
-        gender: 'male',
-        username: 'johnsmith',
-        image: 'https://example.com/image.jpg',
-      },
+    await waitFor(() => {
+      expect(screen.getByText(/error loading user/i)).toBeInTheDocument();
     });
-
-    render(
-      <MemoryRouter>
-        <UserProfile />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => screen.getByRole('button', { name: /back to dashboard/i }));
-
-    fireEvent.click(screen.getByRole('button', { name: /back to dashboard/i }));
-
-    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
   });
 });

@@ -1,25 +1,42 @@
+
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ProtectedRoute from './ProtectedRoute';
 import * as redux from 'react-redux';
 import * as router from 'react-router-dom';
 
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
+
+jest.mock('react-router-dom', () => ({
+  Navigate: jest.fn(({ to, replace, state }) => (
+    <div data-testid="navigate-redirect" data-to={to} data-replace={replace.toString()} data-state={JSON.stringify(state)}>
+      Redirected
+    </div>
+  )),
+  useLocation: jest.fn(),
+}));
+
 const DummyComponent = () => <div>Protected Content</div>;
 
 describe('ProtectedRoute', () => {
   let useSelectorMock;
   let useLocationMock;
-  let navigateMock;
 
   beforeEach(() => {
     useSelectorMock = jest.spyOn(redux, 'useSelector');
     useLocationMock = jest.spyOn(router, 'useLocation');
-    navigateMock = jest.spyOn(router, 'Navigate').mockImplementation(({ to, replace, state }) => {
-      return (
-        <div data-testid="navigate-redirect" data-to={to} data-replace={replace} data-state={JSON.stringify(state)}>
-          Redirected
-        </div>
-      );
+    
+    // Clear localStorage
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+        clear: jest.fn(),
+      },
+      writable: true,
     });
   });
 
@@ -30,6 +47,7 @@ describe('ProtectedRoute', () => {
   it('redirects to "/" with authError and from state if no token in redux or localStorage', () => {
     useSelectorMock.mockReturnValue(null);
     useLocationMock.mockReturnValue({ pathname: '/protected' });
+    window.localStorage.getItem.mockReturnValue(null);
 
     render(<ProtectedRoute component={DummyComponent} />);
 
@@ -52,16 +70,13 @@ describe('ProtectedRoute', () => {
     expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
 
-  it('renders component when token exists in localStorage but not redux', () => {
+  it('renders component when token exists in localStorage', () => {
     useSelectorMock.mockReturnValue(null);
     useLocationMock.mockReturnValue({ pathname: '/protected' });
-
-    jest.spyOn(Storage.prototype, 'getItem').mockReturnValue('local-storage-token');
+    window.localStorage.getItem.mockReturnValue('local-token');
 
     render(<ProtectedRoute component={DummyComponent} />);
 
     expect(screen.getByText('Protected Content')).toBeInTheDocument();
-
-    Storage.prototype.getItem.mockRestore();
   });
 });
